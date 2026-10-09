@@ -1,0 +1,15 @@
+name: Feature request
+description: Something PotPlayer does that Samovar Lite does not, or an idea of your own
+labels: [enhancement]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What would you like?
+      description: Describe it from the user's side. If PotPlayer has it, say where to find it there.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: What would you use it for?

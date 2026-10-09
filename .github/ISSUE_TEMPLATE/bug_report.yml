@@ -1,0 +1,45 @@
+name: Bug report
+description: Something does not work, or does not behave like PotPlayer
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open a video with ...
+        2. Press ...
+    validations:
+      required: true
+  - type: textarea
+    id: info
+    attributes:
+      label: Playback/System Info
+      description: Press Ctrl+F1 in Samovar Lite, choose "Copy All" and paste it here. Remove file names if they are private.
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: Samovar Lite version
+      description: Output of `samovar-lite --version`
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: Distribution, desktop and session type
+      placeholder: Ubuntu 24.04, GNOME, Wayland
+    validations:
+      required: true
+  - type: input
+    id: gpu
+    attributes:
+      label: Graphics card and driver
+      placeholder: Intel Iris Xe, Mesa 24.2
