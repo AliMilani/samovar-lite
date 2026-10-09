@@ -1,0 +1,50 @@
+name: Release
+
+# Pushing a tag like v1.2.3 builds the package and publishes a GitHub release whose notes are the
+# matching section of CHANGELOG.md.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Tag must match the package version
+        run: |
+          version=$(sed -n 's/^__version__ = "\(.*\)"$/\1/p' samovar_lite/__init__.py)
+          echo "package version: $version, tag: $GITHUB_REF_NAME"
+          test "v$version" = "$GITHUB_REF_NAME"
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+      - name: Build wheel and source archive
+        run: pipx run build
+      - name: Release notes from the changelog
+        run: |
+          awk -v version="$VERSION" '
+            index($0, "## [" version "]") == 1 { found = 1; next }
+            found && /^## \[/ { exit }
+            found && !/^\[.*\]: / { print }
+          ' CHANGELOG.md > notes.md
+          test -s notes.md
+          {
+            echo
+            echo "### Install"
+            echo
+            echo '```sh'
+            echo "git clone --branch $GITHUB_REF_NAME https://github.com/${GITHUB_REPOSITORY}.git && cd samovar-lite && ./install.sh"
+            echo '```'
+            echo
+            echo "or, with libmpv already installed: \`pipx install samovar_lite-$VERSION-py3-none-any.whl\`"
+          } >> notes.md
+          cat notes.md
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --title "Samovar Lite $VERSION" --notes-file notes.md --verify-tag
