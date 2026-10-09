@@ -1,0 +1,68 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "samovar-lite"
+dynamic = ["version"]
+description = "PotPlayer-style media player for Linux, built on libmpv and Qt"
+readme = "README.md"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [{ name = "Ali Milani" }]
+keywords = ["video", "media player", "mpv", "libmpv", "qt", "pyside6", "linux", "wayland", "subtitles"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: X11 Applications :: Qt",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Video :: Display",
+    "Topic :: Multimedia :: Sound/Audio :: Players",
+]
+dependencies = [
+    "PySide6-Essentials>=6.7",
+    "mpv>=1.0.7",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff==0.16.10"]
+
+[project.gui-scripts]
+samovar-lite = "samovar_lite.app:main"
+
+[project.urls]
+Homepage = "https://github.com/AliMilani/samovar-lite"
+Issues = "https://github.com/AliMilani/samovar-lite/issues"
+Changelog = "https://github.com/AliMilani/samovar-lite/blob/main/CHANGELOG.md"
+
+[tool.hatch.version]
+path = "samovar_lite/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["samovar_lite"]
+
+[tool.hatch.build.targets.sdist]
+include = ["samovar_lite", "tests", "install.sh", "README.md", "CHANGELOG.md", "LICENSE"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = [
+    "UP031",  # %-formatting is used on purpose for the many small OSD strings
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/smoke.py" = ["E402"]  # environment must be prepared before Qt is imported
+
+[tool.pytest.ini_options]
+testpaths = ["tests/unit"]
+pythonpath = ["."]
